@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Draggable Float Button Demo</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .demo-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .demo-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        background: #f9f9f9;
+      }
+
+      .demo-section h3 {
+        margin-top: 0;
+        color: #555;
+      }
+
+      .demo-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+      }
+
+      .demo-button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background: #007bff;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .demo-button:hover {
+        background: #0056b3;
+      }
+
+      .info {
+        background: #e7f3ff;
+        border: 1px solid #b3d9ff;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 15px 0;
+      }
+
+      .info p {
+        margin: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-container">
+      <h1>🎯 React Draggable Float Button Demo</h1>
+
+      <div class="info">
+        <p><strong>Instructions:</strong></p>
+        <p>• Click the buttons below to add floating buttons to the screen</p>
+        <p>• Drag the floating buttons around to move them</p>
+        <p>• Try different sizes, colors, and positions</p>
+        <p>• The buttons will stay within the viewport bounds</p>
+      </div>
+
+      <div class="demo-section">
+        <h3>Basic Examples</h3>
+        <div class="demo-buttons">
+          <button class="demo-button" onclick="addBasicButton()">
+            Add Basic Button
+          </button>
+          <button class="demo-button" onclick="addDefaultIconButton()">
+            Add White Button
+          </button>
+          <button class="demo-button" onclick="addIconButton()">
+            Add Icon Button
+          </button>
+          <button class="demo-button" onclick="addTextButton()">
+            Add Text Button
+          </button>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h3>Size Variations</h3>
+        <div class="demo-buttons">
+          <button class="demo-button" onclick="addSmallButton()">Small</button>
+          <button class="demo-button" onclick="addMediumButton()">
+            Medium
+          </button>
+          <button class="demo-button" onclick="addLargeButton()">Large</button>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h3>Position Examples</h3>
+        <div class="demo-buttons">
+          <button class="demo-button" onclick="addTopLeftButton()">
+            Top Left
+          </button>
+          <button class="demo-button" onclick="addTopRightButton()">
+            Top Right
+          </button>
+          <button class="demo-button" onclick="addBottomLeftButton()">
+            Bottom Left
+          </button>
+          <button class="demo-button" onclick="addBottomRightButton()">
+            Bottom Right
+          </button>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h3>Color Variations</h3>
+        <div class="demo-buttons">
+          <button
+            class="demo-button"
+            onclick="addRedButton()"
+            style="background: #dc3545"
+          >
+            Red
+          </button>
+          <button
+            class="demo-button"
+            onclick="addGreenButton()"
+            style="background: #28a745"
+          >
+            Green
+          </button>
+          <button
+            class="demo-button"
+            onclick="addPurpleButton()"
+            style="background: #6f42c1"
+          >
+            Purple
+          </button>
+          <button
+            class="demo-button"
+            onclick="addOrangeButton()"
+            style="background: #fd7e14"
+          >
+            Orange
+          </button>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h3>Special Features</h3>
+        <div class="demo-buttons">
+          <button class="demo-button" onclick="addFixedButton()">
+            Fixed Position
+          </button>
+          <button class="demo-button" onclick="addCustomButton()">
+            Custom Style
+          </button>
+          <button
+            class="demo-button"
+            onclick="clearAllButtons()"
+            style="background: #dc3545"
+          >
+            Clear All
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- React and ReactDOM -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+
+    <!-- Babel for JSX transformation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Our component (in production, this would be the built package) -->
+    <script type="text/babel">
+      const { useState, useRef, useCallback, useEffect } = React;
+
+      // FloatingButton component (simplified version for demo)
+      const FloatingButton = ({
+        children,
+        onClick,
+        className = "",
+        style = {},
+        position,
+        defaultPosition = "bottom-right",
+        draggable = true,
+        disabled = false,
+        size = "medium",
+        color = "#000000",
+        backgroundColor = "#ffffff",
+        borderRadius = 50,
+        boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)",
+        zIndex = 1000,
+        onDragStart,
+        onDragEnd,
+      }) => {
+        const [isDragging, setIsDragging] = useState(false);
+        const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+        const [buttonPosition, setButtonPosition] = useState(null);
+        const buttonRef = useRef(null);
+
+        const getDefaultPosition = useCallback(() => {
+          if (position) return position;
+
+          const windowWidth = window.innerWidth;
+          const windowHeight = window.innerHeight;
+          const buttonSize = size === "small" ? 40 : size === "large" ? 60 : 50;
+          const margin = 20;
+
+          switch (defaultPosition) {
+            case "bottom-right":
+              return {
+                x: windowWidth - buttonSize - margin,
+                y: windowHeight - buttonSize - margin,
+              };
+            case "bottom-left":
+              return { x: margin, y: windowHeight - buttonSize - margin };
+            case "top-right":
+              return { x: windowWidth - buttonSize - margin, y: margin };
+            case "top-left":
+              return { x: margin, y: margin };
+            default:
+              return {
+                x: windowWidth - buttonSize - margin,
+                y: windowHeight - buttonSize - margin,
+              };
+          }
+        }, [position, defaultPosition, size]);
+
+        useEffect(() => {
+          if (buttonPosition === null) {
+            setButtonPosition(getDefaultPosition());
+          }
+        }, [buttonPosition, getDefaultPosition]);
+
+        const handleMouseDown = useCallback(
+          (e) => {
+            if (!draggable || disabled) return;
+
+            e.preventDefault();
+            setIsDragging(true);
+
+            const rect = buttonRef.current?.getBoundingClientRect();
+            if (rect) {
+              setDragOffset({
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top,
+              });
+            }
+
+            onDragStart?.(buttonPosition || { x: 0, y: 0 });
+          },
+          [draggable, disabled, buttonPosition, onDragStart]
+        );
+
+        const handleMouseMove = useCallback(
+          (e) => {
+            if (!isDragging || !draggable || disabled) return;
+
+            const newX = e.clientX - dragOffset.x;
+            const newY = e.clientY - dragOffset.y;
+
+            const buttonSize =
+              size === "small" ? 40 : size === "large" ? 60 : 50;
+            const maxX = window.innerWidth - buttonSize;
+            const maxY = window.innerHeight - buttonSize;
+
+            const constrainedX = Math.max(0, Math.min(newX, maxX));
+            const constrainedY = Math.max(0, Math.min(newY, maxY));
+
+            setButtonPosition({ x: constrainedX, y: constrainedY });
+          },
+          [isDragging, draggable, disabled, dragOffset, size]
+        );
+
+        const handleMouseUp = useCallback(() => {
+          if (isDragging) {
+            setIsDragging(false);
+            onDragEnd?.(buttonPosition || { x: 0, y: 0 });
+          }
+        }, [isDragging, buttonPosition, onDragEnd]);
+
+        useEffect(() => {
+          if (isDragging) {
+            document.addEventListener("mousemove", handleMouseMove);
+            document.addEventListener("mouseup", handleMouseUp);
+            document.body.style.userSelect = "none";
+          } else {
+            document.body.style.userSelect = "";
+          }
+
+          return () => {
+            document.removeEventListener("mousemove", handleMouseMove);
+            document.removeEventListener("mouseup", handleMouseUp);
+            document.body.style.userSelect = "";
+          };
+        }, [isDragging, handleMouseMove, handleMouseUp]);
+
+        const getSizeStyles = () => {
+          switch (size) {
+            case "small":
+              return { width: 40, height: 40, fontSize: "14px" };
+            case "large":
+              return { width: 60, height: 60, fontSize: "18px" };
+            default:
+              return { width: 50, height: 50, fontSize: "16px" };
+          }
+        };
+
+        const buttonStyles = {
+          position: "fixed",
+          left: buttonPosition?.x || 0,
+          top: buttonPosition?.y || 0,
+          width: getSizeStyles().width,
+          height: getSizeStyles().height,
+          borderRadius,
+          border: "none",
+          backgroundColor,
+          color,
+          fontSize: getSizeStyles().fontSize,
+          fontWeight: "bold",
+          cursor:
+            draggable && !disabled
+              ? isDragging
+                ? "grabbing"
+                : "grab"
+              : "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow,
+          zIndex,
+          transition: isDragging ? "none" : "all 0.2s ease",
+          userSelect: "none",
+          outline: "none",
+          ...style,
+        };
+
+        const handleClick = (e) => {
+          if (!isDragging && !disabled) {
+            onClick?.(e);
+          }
+        };
+
+        return React.createElement(
+          "button",
+          {
+            ref: buttonRef,
+            className,
+            style: buttonStyles,
+            onMouseDown: handleMouseDown,
+            onClick: handleClick,
+            disabled,
+            type: "button",
+          },
+          children
+        );
+      };
+
+      // Demo functions
+      let buttonCount = 0;
+      const container = document.createElement("div");
+      document.body.appendChild(container);
+
+      function addFloatingButton(props) {
+        const id = `floating-button-${++buttonCount}`;
+        const element = document.createElement("div");
+        element.id = id;
+        document.body.appendChild(element);
+
+        ReactDOM.render(
+          React.createElement(FloatingButton, {
+            ...props,
+            onClick: () => {
+              alert(`Button ${buttonCount} clicked!`);
+            },
+          }),
+          element
+        );
+      }
+
+      function addBasicButton() {
+        addFloatingButton({
+          children: "+",
+          // Uses default white background with black text
+        });
+      }
+
+      function addDefaultIconButton() {
+        addFloatingButton({
+          children: "⚡",
+          backgroundColor: "#ffffff",
+          color: "#000000",
+          size: "large",
+        });
+      }
+
+      function addIconButton() {
+        addFloatingButton({
+          children: "💬",
+          backgroundColor: "#28a745",
+          size: "large",
+        });
+      }
+
+      function addTextButton() {
+        addFloatingButton({
+          children: "Help",
+          backgroundColor: "#6f42c1",
+          borderRadius: 25,
+        });
+      }
+
+      function addSmallButton() {
+        addFloatingButton({
+          children: "S",
+          size: "small",
+          backgroundColor: "#17a2b8",
+        });
+      }
+
+      function addMediumButton() {
+        addFloatingButton({
+          children: "M",
+          size: "medium",
+          backgroundColor: "#ffc107",
+          color: "#000",
+        });
+      }
+
+      function addLargeButton() {
+        addFloatingButton({
+          children: "L",
+          size: "large",
+          backgroundColor: "#dc3545",
+        });
+      }
+
+      function addTopLeftButton() {
+        addFloatingButton({
+          children: "TL",
+          defaultPosition: "top-left",
+          backgroundColor: "#fd7e14",
+        });
+      }
+
+      function addTopRightButton() {
+        addFloatingButton({
+          children: "TR",
+          defaultPosition: "top-right",
+          backgroundColor: "#20c997",
+        });
+      }
+
+      function addBottomLeftButton() {
+        addFloatingButton({
+          children: "BL",
+          defaultPosition: "bottom-left",
+          backgroundColor: "#6f42c1",
+        });
+      }
+
+      function addBottomRightButton() {
+        addFloatingButton({
+          children: "BR",
+          defaultPosition: "bottom-right",
+          backgroundColor: "#e83e8c",
+        });
+      }
+
+      function addRedButton() {
+        addFloatingButton({
+          children: "🔴",
+          backgroundColor: "#dc3545",
+          size: "large",
+        });
+      }
+
+      function addGreenButton() {
+        addFloatingButton({
+          children: "🟢",
+          backgroundColor: "#28a745",
+          size: "large",
+        });
+      }
+
+      function addPurpleButton() {
+        addFloatingButton({
+          children: "🟣",
+          backgroundColor: "#6f42c1",
+          size: "large",
+        });
+      }
+
+      function addOrangeButton() {
+        addFloatingButton({
+          children: "🟠",
+          backgroundColor: "#fd7e14",
+          size: "large",
+        });
+      }
+
+      function addFixedButton() {
+        addFloatingButton({
+          children: "Fixed",
+          draggable: false,
+          backgroundColor: "#6c757d",
+          position: { x: 50, y: 50 },
+        });
+      }
+
+      function addCustomButton() {
+        addFloatingButton({
+          children: "Custom",
+          backgroundColor: "#ff6b6b",
+          borderRadius: 15,
+          boxShadow: "0 8px 24px rgba(255, 107, 107, 0.4)",
+          style: {
+            border: "3px solid #ff5252",
+            background: "linear-gradient(45deg, #ff6b6b, #ff8e8e)",
+          },
+        });
+      }
+
+      function clearAllButtons() {
+        const buttons = document.querySelectorAll('[id^="floating-button-"]');
+        buttons.forEach((button) => {
+          ReactDOM.unmountComponentAtNode(button);
+          button.remove();
+        });
+        buttonCount = 0;
+      }
+    </script>
+  </body>
+</html>
