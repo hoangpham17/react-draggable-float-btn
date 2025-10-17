@@ -1,0 +1,50 @@
+.btn-float-draggable {
+  position: fixed;
+  border: none;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  user-select: none;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+  color: #000000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  z-index: 1000;
+}
+
+.btn-float-draggable:not(.btn-float-draggable--disabled):not(
+    .btn-float-draggable--dragging
+  ) {
+  cursor: grab;
+}
+
+.btn-float-draggable--dragging {
+  cursor: grabbing;
+  transition: none;
+}
+
+.btn-float-draggable--disabled {
+  cursor: not-allowed;
+}
+
+/* Size variants */
+.btn-float-draggable--small {
+  width: 40px;
+  height: 40px;
+  font-size: 14px;
+}
+
+.btn-float-draggable--medium {
+  width: 50px;
+  height: 50px;
+  font-size: 16px;
+}
+
+.btn-float-draggable--large {
+  width: 60px;
+  height: 60px;
+  font-size: 18px;
+}

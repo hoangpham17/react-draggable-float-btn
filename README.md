@@ -1,16 +1,15 @@
 # React Draggable Float Button
 
-A customizable, draggable floating button component for React applications.
+A lightweight, customizable draggable floating button component for React.
 
 ## Features
 
-- 🎯 **Draggable**: Drag the button anywhere on the screen
-- 🎨 **Customizable**: Custom styles, colors, sizes, and positions
-- 📱 **Responsive**: Automatically adjusts to window resize
-- 🎭 **Flexible**: Support for custom children and click handlers
-- 🎪 **TypeScript**: Full TypeScript support with type definitions
-- 🚀 **Lightweight**: Minimal dependencies, optimized bundle size
-- 🎨 **Flexible Content**: Support for text, emojis, icons, or any React elements
+- 🎯 Fully draggable with viewport constraints
+- 🎨 Customizable styles via props or CSS classes
+- 📱 Responsive and automatically repositions on window resize
+- 🎪 TypeScript support with full type definitions
+- 🚀 Lightweight with zero dependencies
+- 💅 BEM-style CSS classes for easy customization
 
 ## Installation
 
@@ -18,83 +17,38 @@ A customizable, draggable floating button component for React applications.
 npm install react-draggable-float-btn
 ```
 
-## Usage
-
-### Basic Usage
+## Quick Start
 
 ```tsx
-import React from "react";
 import { FloatingButton } from "react-draggable-float-btn";
 
 function App() {
   return (
-    <FloatingButton onClick={() => console.log("Button clicked!")}>
-      +
-    </FloatingButton>
-  );
-}
-```
-
-**Note**: You need to provide `children` content for the button to display.
-
-### Advanced Usage
-
-```tsx
-import React from "react";
-import { FloatingButton } from "react-draggable-float-btn";
-
-function App() {
-  const handleClick = () => {
-    console.log("Floating button clicked!");
-  };
-
-  const handleDragStart = (position) => {
-    console.log("Drag started at:", position);
-  };
-
-  const handleDragEnd = (position) => {
-    console.log("Drag ended at:", position);
-  };
-
-  return (
-    <FloatingButton
-      onClick={handleClick}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      size="large"
-      backgroundColor="#ff6b6b"
-      color="#ffffff"
-      defaultPosition="bottom-right"
-      style={{
-        boxShadow: "0 8px 24px rgba(255, 107, 107, 0.3)",
-      }}
-    >
-      <span>💬</span>
-    </FloatingButton>
+    <FloatingButton onClick={() => console.log("Clicked!")}>+</FloatingButton>
   );
 }
 ```
 
 ## Props
 
-| Prop              | Type                                                           | Default                            | Description                                     |
-| ----------------- | -------------------------------------------------------------- | ---------------------------------- | ----------------------------------------------- |
-| `children`        | `React.ReactNode`                                              | -                                  | Content to display inside the button            |
-| `onClick`         | `(event: MouseEvent) => void`                                  | -                                  | Click handler function                          |
-| `className`       | `string`                                                       | `''`                               | CSS class name for the button                   |
-| `style`           | `CSSProperties`                                                | `{}`                               | Inline styles for the button                    |
-| `position`        | `{ x: number; y: number }`                                     | -                                  | Custom position (overrides defaultPosition)     |
-| `defaultPosition` | `'bottom-right' \| 'bottom-left' \| 'top-right' \| 'top-left'` | `'bottom-right'`                   | Default position when no custom position is set |
-| `draggable`       | `boolean`                                                      | `true`                             | Whether the button can be dragged               |
-| `disabled`        | `boolean`                                                      | `false`                            | Whether the button is disabled                  |
-| `size`            | `'small' \| 'medium' \| 'large'`                               | `'medium'`                         | Button size                                     |
-| `color`           | `string`                                                       | `'#000000'`                        | Text color                                      |
-| `backgroundColor` | `string`                                                       | `'#ffffff'`                        | Background color                                |
-| `borderRadius`    | `number`                                                       | `50`                               | Border radius (50 = fully rounded)              |
-| `boxShadow`       | `string`                                                       | `'0 4px 12px rgba(0, 0, 0, 0.15)'` | Box shadow                                      |
-| `zIndex`          | `number`                                                       | `1000`                             | Z-index of the button                           |
-| `onDragStart`     | `(position: { x: number; y: number }) => void`                 | -                                  | Called when drag starts                         |
-| `onDragEnd`       | `(position: { x: number; y: number }) => void`                 | -                                  | Called when drag ends                           |
+| Prop              | Type                                                           | Default          | Description                                |
+| ----------------- | -------------------------------------------------------------- | ---------------- | ------------------------------------------ |
+| `children`        | `React.ReactNode`                                              | Required         | Content to display inside the button       |
+| `onClick`         | `(event: MouseEvent) => void`                                  | -                | Click handler                              |
+| `size`            | `'small' \| 'medium' \| 'large'`                               | `'medium'`       | Button size (40px / 50px / 60px)           |
+| `defaultPosition` | `'bottom-right' \| 'bottom-left' \| 'top-right' \| 'top-left'` | `'bottom-right'` | Default position                           |
+| `position`        | `{ x: number; y: number }`                                     | -                | Fixed position (overrides defaultPosition) |
+| `draggable`       | `boolean`                                                      | `true`           | Enable/disable dragging                    |
+| `disabled`        | `boolean`                                                      | `false`          | Disable button interactions                |
+| `backgroundColor` | `string`                                                       | `#ffffff`        | Background color                           |
+| `color`           | `string`                                                       | `#000000`        | Text/content color                         |
+| `borderRadius`    | `number`                                                       | `50`             | Border radius in pixels                    |
+| `boxShadow`       | `string`                                                       | CSS default      | Custom box shadow                          |
+| `zIndex`          | `number`                                                       | `1000`           | Z-index value                              |
+| `className`       | `string`                                                       | -                | Additional CSS class                       |
+| `style`           | `CSSProperties`                                                | -                | Inline styles                              |
+| `onDragStart`     | `(position: { x: number; y: number }) => void`                 | -                | Callback when drag starts                  |
+| `onDragEnd`       | `(position: { x: number; y: number }) => void`                 | -                | Callback when drag ends                    |
 
 ## Examples
 
@@ -106,12 +60,10 @@ function App() {
 <FloatingButton size="large">L</FloatingButton>
 ```
 
-### Different Positions
+### Positions
 
 ```tsx
 <FloatingButton defaultPosition="top-left">TL</FloatingButton>
-<FloatingButton defaultPosition="top-right">TR</FloatingButton>
-<FloatingButton defaultPosition="bottom-left">BL</FloatingButton>
 <FloatingButton defaultPosition="bottom-right">BR</FloatingButton>
 ```
 
@@ -119,58 +71,100 @@ function App() {
 
 ```tsx
 <FloatingButton
-  backgroundColor="#28a745"
+  backgroundColor="#007bff"
   color="#ffffff"
-  borderRadius={25}
-  boxShadow="0 6px 20px rgba(40, 167, 69, 0.4)"
+  size="large"
+  onClick={() => alert("Hello!")}
+>
+  💬
+</FloatingButton>
+```
+
+### Multiple Buttons
+
+```tsx
+<>
+  <FloatingButton defaultPosition="bottom-right">+</FloatingButton>
+  <FloatingButton defaultPosition="bottom-left">💬</FloatingButton>
+  <FloatingButton defaultPosition="top-right">🔔</FloatingButton>
+</>
+```
+
+### Non-draggable
+
+```tsx
+<FloatingButton draggable={false} position={{ x: 100, y: 100 }}>
+  📌
+</FloatingButton>
+```
+
+## Styling
+
+### CSS Classes
+
+The component uses BEM-style classes:
+
+- `.btn-float-draggable` - Base class
+- `.btn-float-draggable--{size}` - Size variants (small/medium/large)
+- `.btn-float-draggable--dragging` - Applied while dragging
+- `.btn-float-draggable--disabled` - Applied when disabled
+
+### Override Styles
+
+```css
+.btn-float-draggable {
+  background-color: #007bff !important;
+  box-shadow: 0 8px 16px rgba(0, 123, 255, 0.3) !important;
+}
+
+.btn-float-draggable--large {
+  width: 70px !important;
+  height: 70px !important;
+}
+
+.btn-float-draggable--dragging {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+```
+
+### Using Custom Classes
+
+```tsx
+<FloatingButton className="my-custom-button">Custom</FloatingButton>
+```
+
+The button will render with combined classes:
+
+```html
+<button
+  class="btn-float-draggable btn-float-draggable--medium my-custom-button"
+></button>
+```
+
+## Advanced Usage
+
+### With Drag Callbacks
+
+```tsx
+<FloatingButton
+  onDragStart={(pos) => console.log("Drag started:", pos)}
+  onDragEnd={(pos) => console.log("Drag ended:", pos)}
+>
+  📍
+</FloatingButton>
+```
+
+### With Custom Styles
+
+```tsx
+<FloatingButton
   style={{
-    border: "2px solid #1e7e34",
+    background: "linear-gradient(45deg, #ff6b6b, #ff8e8e)",
+    border: "3px solid #ff5252",
   }}
 >
-  Save
-</FloatingButton>
-```
-
-### Non-draggable Button
-
-```tsx
-<FloatingButton
-  draggable={false}
-  onClick={() => alert("Fixed position button!")}
->
-  Fixed
-</FloatingButton>
-```
-
-### Custom Position
-
-```tsx
-<FloatingButton
-  position={{ x: 100, y: 100 }}
-  onClick={() => console.log("Custom position!")}
->
-  Custom
-</FloatingButton>
-```
-
-### Custom Content
-
-```tsx
-import { FloatingButton } from "react-draggable-float-btn";
-
-// With text
-<FloatingButton onClick={() => console.log("Text button!")}>
-  Click me
-</FloatingButton>
-
-// With emoji
-<FloatingButton onClick={() => console.log("Emoji button!")}>
-  🚀
-</FloatingButton>
-
-// With custom icon
-<FloatingButton onClick={() => console.log("Icon button!")}>
-  <span>⚡</span>
+  ✨
 </FloatingButton>
 ```
 
@@ -180,10 +174,10 @@ import { FloatingButton } from "react-draggable-float-btn";
 # Install dependencies
 npm install
 
-# Build the package
+# Build package
 npm run build
 
-# Watch for changes
+# Watch mode
 npm run dev
 ```
 

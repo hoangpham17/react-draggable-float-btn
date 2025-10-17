@@ -73,6 +73,58 @@
       .info p {
         margin: 5px 0;
       }
+
+      /* FloatingButton CSS */
+      .btn-float-draggable {
+        position: fixed;
+        border: none;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        outline: none;
+        user-select: none;
+        transition: all 0.2s ease;
+        background-color: #ffffff;
+        color: #000000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border-radius: 50%;
+        z-index: 1000;
+      }
+
+      .btn-float-draggable:not(.btn-float-draggable--disabled):not(
+          .btn-float-draggable--dragging
+        ) {
+        cursor: grab;
+      }
+
+      .btn-float-draggable--dragging {
+        cursor: grabbing;
+        transition: none;
+      }
+
+      .btn-float-draggable--disabled {
+        cursor: not-allowed;
+      }
+
+      /* Size variants */
+      .btn-float-draggable--small {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+      }
+
+      .btn-float-draggable--medium {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+      }
+
+      .btn-float-draggable--large {
+        width: 60px;
+        height: 60px;
+        font-size: 18px;
+      }
     </style>
   </head>
   <body>
@@ -205,7 +257,7 @@
     <script type="text/babel">
       const { useState, useRef, useCallback, useEffect } = React;
 
-      // FloatingButton component (simplified version for demo)
+      // FloatingButton component (matches the actual component)
       const FloatingButton = ({
         children,
         onClick,
@@ -216,10 +268,10 @@
         draggable = true,
         disabled = false,
         size = "medium",
-        color = "#000000",
-        backgroundColor = "#ffffff",
+        color,
+        backgroundColor,
         borderRadius = 50,
-        boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)",
+        boxShadow,
         zIndex = 1000,
         onDragStart,
         onDragEnd,
@@ -229,12 +281,23 @@
         const [buttonPosition, setButtonPosition] = useState(null);
         const buttonRef = useRef(null);
 
+        const getSizeValue = useCallback(() => {
+          switch (size) {
+            case "small":
+              return 40;
+            case "large":
+              return 60;
+            default:
+              return 50;
+          }
+        }, [size]);
+
         const getDefaultPosition = useCallback(() => {
           if (position) return position;
 
           const windowWidth = window.innerWidth;
           const windowHeight = window.innerHeight;
-          const buttonSize = size === "small" ? 40 : size === "large" ? 60 : 50;
+          const buttonSize = getSizeValue();
           const margin = 20;
 
           switch (defaultPosition) {
@@ -255,7 +318,7 @@
                 y: windowHeight - buttonSize - margin,
               };
           }
-        }, [position, defaultPosition, size]);
+        }, [position, defaultPosition, getSizeValue]);
 
         useEffect(() => {
           if (buttonPosition === null) {
@@ -290,8 +353,7 @@
             const newX = e.clientX - dragOffset.x;
             const newY = e.clientY - dragOffset.y;
 
-            const buttonSize =
-              size === "small" ? 40 : size === "large" ? 60 : 50;
+            const buttonSize = getSizeValue();
             const maxX = window.innerWidth - buttonSize;
             const maxY = window.innerHeight - buttonSize;
 
@@ -300,7 +362,7 @@
 
             setButtonPosition({ x: constrainedX, y: constrainedY });
           },
-          [isDragging, draggable, disabled, dragOffset, size]
+          [isDragging, draggable, disabled, dragOffset, getSizeValue]
         );
 
         const handleMouseUp = useCallback(() => {
@@ -326,45 +388,26 @@
           };
         }, [isDragging, handleMouseMove, handleMouseUp]);
 
-        const getSizeStyles = () => {
-          switch (size) {
-            case "small":
-              return { width: 40, height: 40, fontSize: "14px" };
-            case "large":
-              return { width: 60, height: 60, fontSize: "18px" };
-            default:
-              return { width: 50, height: 50, fontSize: "16px" };
-          }
-        };
-
         const buttonStyles = {
-          position: "fixed",
           left: buttonPosition?.x || 0,
           top: buttonPosition?.y || 0,
-          width: getSizeStyles().width,
-          height: getSizeStyles().height,
-          borderRadius,
-          border: "none",
-          backgroundColor,
-          color,
-          fontSize: getSizeStyles().fontSize,
-          fontWeight: "bold",
-          cursor:
-            draggable && !disabled
-              ? isDragging
-                ? "grabbing"
-                : "grab"
-              : "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow,
-          zIndex,
-          transition: isDragging ? "none" : "all 0.2s ease",
-          userSelect: "none",
-          outline: "none",
+          ...(backgroundColor && { backgroundColor }),
+          ...(color && { color }),
+          ...(borderRadius !== 50 && { borderRadius }),
+          ...(boxShadow && { boxShadow }),
+          ...(zIndex !== 1000 && { zIndex }),
           ...style,
         };
+
+        const buttonClasses = [
+          "btn-float-draggable",
+          `btn-float-draggable--${size}`,
+          isDragging ? "btn-float-draggable--dragging" : "",
+          disabled ? "btn-float-draggable--disabled" : "",
+          className,
+        ]
+          .filter(Boolean)
+          .join(" ");
 
         const handleClick = (e) => {
           if (!isDragging && !disabled) {
@@ -376,7 +419,7 @@
           "button",
           {
             ref: buttonRef,
-            className,
+            className: buttonClasses,
             style: buttonStyles,
             onMouseDown: handleMouseDown,
             onClick: handleClick,

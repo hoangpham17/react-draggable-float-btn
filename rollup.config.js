@@ -2,6 +2,7 @@ const resolve = require("@rollup/plugin-node-resolve");
 const commonjs = require("@rollup/plugin-commonjs");
 const typescript = require("@rollup/plugin-typescript");
 const dts = require("rollup-plugin-dts").default;
+const postcss = require("rollup-plugin-postcss");
 
 const packageJson = require("./package.json");
 
@@ -27,6 +28,10 @@ module.exports = [
       commonjs(),
       typescript({
         tsconfig: "./tsconfig.json",
+      }),
+      postcss({
+        extract: false,
+        inject: true,
       }),
     ],
     external: ["react", "react-dom"],

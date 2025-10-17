@@ -5,6 +5,7 @@ import React, {
   useEffect,
   CSSProperties,
 } from "react";
+import "./FloatingButton.css";
 
 export interface FloatingButtonProps {
   children?: React.ReactNode;
@@ -38,10 +39,10 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
   draggable = true,
   disabled = false,
   size = "medium",
-  color = "#000000",
-  backgroundColor = "#ffffff",
+  color,
+  backgroundColor,
   borderRadius = 50,
-  boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)",
+  boxShadow,
   zIndex = 1000,
   onDragStart,
   onDragEnd,
@@ -55,13 +56,24 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const getSizeValue = useCallback(() => {
+    switch (size) {
+      case "small":
+        return 40;
+      case "large":
+        return 60;
+      default:
+        return 50;
+    }
+  }, [size]);
+
   // Get default position based on defaultPosition prop
   const getDefaultPosition = useCallback(() => {
     if (position) return position;
 
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
-    const buttonSize = size === "small" ? 40 : size === "large" ? 60 : 50;
+    const buttonSize = getSizeValue();
     const margin = 20;
 
     switch (defaultPosition) {
@@ -82,7 +94,7 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
           y: windowHeight - buttonSize - margin,
         };
     }
-  }, [position, defaultPosition, size]);
+  }, [position, defaultPosition, getSizeValue]);
 
   // Initialize position
   useEffect(() => {
@@ -132,7 +144,7 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
       const newY = e.clientY - dragOffset.y;
 
       // Keep button within viewport bounds
-      const buttonSize = size === "small" ? 40 : size === "large" ? 60 : 50;
+      const buttonSize = getSizeValue();
       const maxX = window.innerWidth - buttonSize;
       const maxY = window.innerHeight - buttonSize;
 
@@ -141,7 +153,7 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
 
       setButtonPosition({ x: constrainedX, y: constrainedY });
     },
-    [isDragging, draggable, disabled, dragOffset, size]
+    [isDragging, draggable, disabled, dragOffset, getSizeValue]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -168,40 +180,26 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
     };
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  const getSizeStyles = () => {
-    switch (size) {
-      case "small":
-        return { width: 40, height: 40, fontSize: "14px" };
-      case "large":
-        return { width: 60, height: 60, fontSize: "18px" };
-      default:
-        return { width: 50, height: 50, fontSize: "16px" };
-    }
-  };
-
   const buttonStyles: CSSProperties = {
-    position: "fixed",
     left: buttonPosition?.x || 0,
     top: buttonPosition?.y || 0,
-    width: getSizeStyles().width,
-    height: getSizeStyles().height,
-    borderRadius,
-    border: "none",
-    backgroundColor,
-    color,
-    fontSize: getSizeStyles().fontSize,
-    fontWeight: "bold",
-    cursor: !disabled ? (isDragging ? "grabbing" : "grab") : "not-allowed",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow,
-    zIndex,
-    transition: isDragging ? "none" : "all 0.2s ease",
-    userSelect: "none",
-    outline: "none",
+    ...(backgroundColor && { backgroundColor }),
+    ...(color && { color }),
+    ...(borderRadius !== 50 && { borderRadius }),
+    ...(boxShadow && { boxShadow }),
+    ...(zIndex !== 1000 && { zIndex }),
     ...style,
   };
+
+  const buttonClasses = [
+    "btn-float-draggable",
+    `btn-float-draggable--${size}`,
+    isDragging ? "btn-float-draggable--dragging" : "",
+    disabled ? "btn-float-draggable--disabled" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!isDragging && !disabled) {
@@ -213,7 +211,7 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
     <div ref={containerRef}>
       <button
         ref={buttonRef}
-        className={className}
+        className={buttonClasses}
         style={buttonStyles}
         onMouseDown={handleMouseDown}
         onClick={handleClick}
