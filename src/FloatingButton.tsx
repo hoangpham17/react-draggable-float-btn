@@ -183,6 +183,8 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
   const buttonStyles: CSSProperties = {
     left: buttonPosition?.x || 0,
     top: buttonPosition?.y || 0,
+    width: getSizeValue(),
+    height: getSizeValue(),
     ...(backgroundColor && { backgroundColor }),
     ...(color && { color }),
     ...(borderRadius !== 50 && { borderRadius }),
