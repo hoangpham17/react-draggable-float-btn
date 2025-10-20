@@ -1,6 +1,6 @@
 {
   "name": "react-draggable-float-btn",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A draggable floating button component for React",
   "main": "dist/index.cjs",
   "module": "dist/index.esm.js",
@@ -24,7 +24,7 @@
     "ui",
     "component"
   ],
-  "author": "Your Name",
+  "author": "Hoang Pham",
   "license": "MIT",
   "peerDependencies": {
     "react": ">=16.8.0",
@@ -46,10 +46,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/react-draggable-float-btn.git"
+    "url": "git+https://github.com/hoangpham17/react-draggable-float-btn.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/react-draggable-float-btn/issues"
+    "url": "https://github.com/hoangpham17/react-draggable-float-btn/issues"
   },
-  "homepage": "https://github.com/yourusername/react-draggable-float-btn#readme"
+  "homepage": "https://github.com/hoangpham17/react-draggable-float-btn#readme"
 }
