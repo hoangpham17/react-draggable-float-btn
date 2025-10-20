@@ -1,5 +1,9 @@
 # React Draggable Float Button
 
+[![npm version](https://img.shields.io/npm/v/react-draggable-float-btn)](https://www.npmjs.com/package/react-draggable-float-btn)
+[![npm downloads](https://img.shields.io/npm/dm/react-draggable-float-btn)](https://www.npmjs.com/package/react-draggable-float-btn)
+![License](https://img.shields.io/npm/l/react-draggable-float-btn)
+
 A lightweight, customizable draggable floating button component for React.
 
 ## Features
